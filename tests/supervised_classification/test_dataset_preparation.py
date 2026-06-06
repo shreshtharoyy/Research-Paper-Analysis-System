@@ -1,6 +1,7 @@
-from pipeline.classification.supervised.dataset_preparation import load_arxiv_dataset, filter_cs_categories
+from pipeline.classification.supervised.dataset_preparation import load_arxiv_dataset, filter_cs_categories, remap_labels
 
 dataset = load_arxiv_dataset()
 
 dataset = filter_cs_categories(dataset)
-print(dataset)
+dataset = remap_labels(dataset)
+print(dataset["train"][0])
