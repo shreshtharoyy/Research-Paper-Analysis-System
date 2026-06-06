@@ -16,10 +16,25 @@ def filter_cs_categories(dataset):
         9   # cs.NE
     }
 
-    dataset["train"] = dataset["train"].filter(lambda example: example["label"] in allowed_labels)
+    for split in ["train", "validation", "test"]:
+        dataset[split] = dataset[split].filter(lambda x: x["label"] in allowed_labels)
 
-    dataset["validation"] = dataset["validation"].filter(lambda example: example["label"] in allowed_labels)
+    return dataset
 
-    dataset["test"] = dataset["test"].filter(lambda example: example["label"] in allowed_labels)
+def remap_labels(dataset):
+
+    label_remap = {
+        1: 0,  # cs.CV
+        2: 1,  # cs.AI
+        3: 2,  # cs.SY
+        5: 3,  # cs.CE
+        6: 4,  # cs.PL
+        7: 5,  # cs.IT
+        8: 6,  # cs.DS
+        9: 7   # cs.NE
+    }
+
+    for split in ["train", "validation", "test"]:
+        dataset[split] = dataset[split].map(lambda x: {"label": label_remap[x["label"]]})
 
     return dataset
