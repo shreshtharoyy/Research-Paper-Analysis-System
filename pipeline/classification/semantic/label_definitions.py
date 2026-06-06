@@ -1,4 +1,25 @@
 DOMAIN_DESCRIPTIONS = {
+    "Natural Language Processing":
+    "Research involving transformers, language models, text classification, sentiment analysis, machine translation, question answering and text generation.",
+
+    "Computer Vision":
+        "Research involving image classification, object detection, image segmentation, visual recognition, video understanding and visual perception.",
+
+    "Machine Learning":
+        "Research involving supervised learning, unsupervised learning, deep learning, neural networks, predictive modeling and artificial intelligence algorithms.",
+
+    "Cyber Security":
+        "Research involving network security, malware analysis, cryptography, intrusion detection, threat intelligence and secure systems.",
+
+    "Software Engineering":
+        "Research involving software architecture, software testing, requirements engineering, software maintenance, software quality and software development methodologies.",
+
+    "Data Science":
+        "Research involving data analytics, statistical modeling, data mining, big data processing, predictive analytics and business intelligence.",
+
+    "Cloud Computing":
+        "Research involving distributed systems, virtualization, cloud infrastructure, resource allocation, scalable computing and cloud services.",
+
     "Healthcare":
         "Research involving medical diagnosis, disease prediction, clinical decision support, healthcare analytics, medical imaging, patient outcomes and biomedical applications.",
 
