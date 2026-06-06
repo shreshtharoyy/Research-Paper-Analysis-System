@@ -1,11 +1,12 @@
 CS_DOMAINS = [
-    "Natural Language Processing",
     "Computer Vision",
-    "Machine Learning",
-    "Cyber Security",
-    "Software Engineering",
-    "Data Science",
-    "Cloud Computing"
+    "Artificial Intelligence",
+    "Systems and Control",
+    "Computational Engineering",
+    "Programming Languages",
+    "Information Theory",
+    "Data Structures and Algorithms",
+    "Neural and Evolutionary Computing"
 ]
 
 
