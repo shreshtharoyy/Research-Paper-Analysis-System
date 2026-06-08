@@ -1,17 +1,11 @@
 from pipeline.pdf_processing import extract_text_from_pdf, clean_text
-
-from pipeline.chunking import chunk_text
-
-from pipeline.classification.semantic.input_preparation import prepare_classification_input
-
+from pipeline.abstract_extraction import extract_abstract
 from pipeline.classification.semantic.semantic_classifier import classify_paper_semantically
 
-text = extract_text_from_pdf("sample.pdf")
+text = extract_text_from_pdf("sample4.pdf")
 text = clean_text(text)
 
-chunks = chunk_text(text)
-
-classification_text = prepare_classification_input(chunks)
+classification_text = extract_abstract(text)
 
 domain, confidence = classify_paper_semantically(classification_text)
 
