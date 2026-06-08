@@ -1,1 +1,6 @@
 pymupdf
+datasets
+transformers
+torch
+sentence_transformers
+numpy
