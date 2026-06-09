@@ -1,3 +1,19 @@
+# Research-Paper-Analysis-System
+
+An NLP-powered research paper analysis system that combines semantic similarity methods and transformer-based classification to automatically identify research domains, generate concise summaries, extract keywords, and recommend related papers.
+
+## Tech Stack
+
+- ModernBERT (Fine-Tuned)
+- KeyBERT
+- DistilBART
+- BAAI/bge-small-en-v1.5
+- FAISS
+- FastAPI
+- PyTorch
+
+## Status
+
 ## Features
 
 ### Research Paper Domain Classification
@@ -21,6 +37,10 @@ The system implements two complementary classification approaches:
   - Information Theory
   - Data Structures and Algorithms
   - Neural and Evolutionary Computing
+
+### Why Two Classification Approaches?
+
+The project compares a semantic embedding-based classifier against a fine-tuned ModernBERT classifier to evaluate the trade-offs between similarity-based and supervised learning approaches for research paper domain classification.
 
 ### PDF Processing Pipeline
 
