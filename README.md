@@ -12,11 +12,8 @@ An NLP-powered research paper analysis system that combines semantic similarity 
 - FastAPI
 - PyTorch
 
-## Status
 
-## Features
-
-### Research Paper Domain Classification
+## Research Paper Domain Classification
 
 The system implements two complementary classification approaches:
 
@@ -49,7 +46,7 @@ The project compares a semantic embedding-based classifier against a fine-tuned 
 - Abstract extraction for classification
 - End-to-end research paper analysis workflow
 
-## Architecture
+### Architecture
 
 Research Paper (PDF)
         ↓
@@ -69,6 +66,41 @@ Classifier     Classifier
 Domain        Domain
 Prediction    Prediction
 
+
+## Research Paper Summarization
+
+The summarization module generates concise abstractive summaries of research papers using **DistilBART**.
+
+Instead of processing the entire document, the system first extracts the most informative sections—including the **Abstract**, **Results**, **Conclusion**, and **Limitations**—to reduce irrelevant content and provide focused input to the summarization model.
+
+### Workflow
+
+```
+Research Paper PDF
+        │
+        ▼
+PDF Text Extraction
+        │
+        ▼
+Section Extraction
+(Abstract, Results,
+Conclusion, Limitations)
+        │
+        ▼
+DistilBART
+        │
+        ▼
+Abstractive Summary
+```
+
+### Features
+
+* Extracts key sections from research papers
+* Generates concise abstractive summaries
+* Uses DistilBART for efficient local inference
+* Reduces unnecessary processing by summarizing only relevant sections
+* Designed to work as part of the complete research paper analysis pipeline
+
 ## Current Progress
 
 ✅ PDF Processing
@@ -77,9 +109,9 @@ Prediction    Prediction
 
 ✅ Fine-Tuned ModernBERT Classifier
 
-🚧 Keyword Extraction
+✅ TLDR Generation
 
-🚧 TLDR Generation
+🚧 Keyword Extraction
 
 🚧 Semantic Paper Recommendation
 
