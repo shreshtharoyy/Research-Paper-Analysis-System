@@ -4,3 +4,4 @@ transformers
 torch
 sentence_transformers
 numpy
+spacy
