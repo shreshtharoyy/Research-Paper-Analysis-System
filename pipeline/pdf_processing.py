@@ -17,6 +17,13 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         )
 
 def clean_text(text: str) -> str:
-    text = re.sub(r"\s+"," ", text)
+
+    text = text.replace("ﬁ", "fi")
+    text = text.replace("ﬂ", "fl")
+    text = re.sub(r"-\s*\n\s*", "", text)
+
+    text = re.sub(r"\n+", "\n", text)
+
+    text = re.sub(r"\s+", " ", text)
 
     return text.strip()
