@@ -1,14 +1,30 @@
 from .model_loader import nlp
+
+INVALID_POS = {
+    "VERB",
+    "AUX",
+    "ADP",
+    "CCONJ",
+    "SCONJ",
+    "DET",
+    "PRON",
+    "PART",
+    "INTJ",
+}
+
+
 def is_valid_pos_pattern(candidate: str) -> bool:
 
     doc = nlp(candidate)
-    pos_tags = [token.pos_ for token in doc]
+    if len(doc) == 0:
+        return False
 
-    valid_patterns = [
-        ["NOUN", "NOUN"],
-        ["ADJ", "NOUN"],
-        ["ADJ", "NOUN", "NOUN"],
-        ["NOUN", "NOUN", "NOUN"],
-    ]
+    for token in doc:
+        if token.pos_ in INVALID_POS:
+            return False
 
-    return pos_tags in valid_patterns
+    if doc[-1].pos_ not in {"NOUN", "PROPN"}:
+        return False
+
+    return True
+
