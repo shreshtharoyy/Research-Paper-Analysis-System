@@ -213,6 +213,54 @@ The current implementation relies on statistical n-gram candidate generation. Wh
 
 Future improvements may include dependency-based noun phrase extraction or domain-specific scientific parsers while preserving the remaining semantic ranking pipeline.
 
+## Research Paper Recommendation
+
+The recommendation module discovers research papers related to the uploaded document using the OpenAlex REST API.
+
+Instead of maintaining a local research paper corpus, the system performs real-time scholarly search based on the extracted semantic keywords. This approach keeps the project lightweight, scalable, and independent of local datasets.
+
+### Recommendation Pipeline
+
+```text
+Extracted Keywords
+        │
+        ▼
+Recommendation Module
+        │
+        ▼
+OpenAlex REST API
+        │
+        ▼
+Research Papers
+        │
+        ▼
+Paper Objects
+```
+
+### Features
+
+* Fetches relevant research papers from the OpenAlex scholarly database.
+* Uses extracted semantic keywords as the search query.
+* Parses OpenAlex responses into structured `Paper` objects.
+* Reconstructs abstracts from OpenAlex's inverted index representation.
+* Extracts author names, publication year, citation count, and paper URL.
+* Returns recommendation results in a modular, reusable format.
+
+### Why OpenAlex?
+
+OpenAlex was selected because it:
+
+* Provides free access without requiring API keys.
+* Covers research papers across multiple domains including Computer Science, Artificial Intelligence, Medicine, Biology, Finance, Education, Engineering, and more.
+* Exposes a well-documented REST API suitable for production-style backend development.
+* Supplies rich scholarly metadata such as citations, authors, abstracts, publication year, and persistent paper identifiers.
+
+### Technologies Used
+
+* Python
+* Requests
+* OpenAlex REST API
+* Pydantic
 
 ## Current Progress
 
@@ -226,6 +274,6 @@ Future improvements may include dependency-based noun phrase extraction or domai
 
 ✅ Keyword Extraction
 
-🚧 Semantic Paper Recommendation
+✅ Semantic Paper Recommendation
 
 🚧 FastAPI Integration
