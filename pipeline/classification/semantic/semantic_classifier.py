@@ -4,7 +4,7 @@ from .label_definitions import DOMAIN_DESCRIPTIONS
 
 model = SentenceTransformer("BAAI/bge-small-en-v1.5")
 
-def classify_paper_semantically(text: str) -> tuple[str, float]:
+def classify_paper_semantically(text): 
     paper_embedding = model.encode(text, normalize_embeddings=True)
 
     best_domain = None
@@ -22,4 +22,7 @@ def classify_paper_semantically(text: str) -> tuple[str, float]:
     if best_domain is None:
         raise ValueError("No domain could be classified.")
 
-    return best_domain, float(best_score)
+    return {
+        "domain": best_domain,
+        "confidence": float(best_score)
+    }
