@@ -55,6 +55,15 @@ class OpenAlexClient:
         return " ".join(words)
     
     def _parse_paper(self, work: dict) -> Paper:
+
+        open_access = work.get("open_access", {})
+
+        paper_url = (
+            open_access.get("oa_url")
+            or work.get("doi")
+            or work.get("id", "")
+        )
+
         return Paper(
             paper_id=work.get("id", ""),
             title=work.get("title", ""),
@@ -66,5 +75,5 @@ class OpenAlexClient:
             abstract=self._parse_abstract(
                 work.get("abstract_inverted_index")
             ),
-            paper_url=work.get("id", "")
+            paper_url=paper_url
         )
