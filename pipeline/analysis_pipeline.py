@@ -35,34 +35,19 @@ from pipeline.recommendations.openalex import OpenAlexClient
 
 
 class AnalysisPipeline:
-    """
-    Orchestrates the complete research paper analysis pipeline.
-    """
 
     def __init__(self) -> None:
         self.recommendation_client = OpenAlexClient()
 
     def run(self, pdf_path: Path) -> AnalysisResult:
 
-        # ---------------------------------------
-        # PDF Processing
-        # ---------------------------------------
-
         text = extract_text_from_pdf(str(pdf_path))
         cleaned_text = clean_text(text)
-
-        # ---------------------------------------
-        # Section Extraction
-        # ---------------------------------------
 
         abstract = extract_abstract(cleaned_text)
         results = extract_results(cleaned_text)
         conclusion = extract_conclusion(cleaned_text)
         limitations = extract_limitations(cleaned_text)
-
-        # ---------------------------------------
-        # Summarization
-        # ---------------------------------------
 
         summary_input = "\n\n".join(
             [
@@ -75,16 +60,9 @@ class AnalysisPipeline:
 
         summary = generate_summary(summary_input)
 
-        # ---------------------------------------
-        # Classification
-        # ---------------------------------------
-
         classification = classify(abstract)
 
         domain, confidence = classify(abstract)
-        # ---------------------------------------
-        # Keyword Extraction
-        # ---------------------------------------
 
         candidates = generate_candidates(abstract)
 
@@ -107,10 +85,6 @@ class AnalysisPipeline:
             top_n=10,
             diversity=0.7,
         )
-
-        # ---------------------------------------
-        # Paper Recommendation
-        # ---------------------------------------
 
         search_keywords = keywords[:6]
 
@@ -158,9 +132,6 @@ class AnalysisPipeline:
             for item in ranked_papers
         ]
 
-        # ---------------------------------------
-        # Final Output
-        # ---------------------------------------
 
         return AnalysisResult(
             summary=summary,
