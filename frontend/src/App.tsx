@@ -1,6 +1,10 @@
 import { useState } from "react";
 
 import UploadCard from "./components/UploadCard";
+import SummaryCard from "./components/SummaryCard";
+import ClassificationCard from "./components/ClassificationCard";
+import KeywordsCard from "./components/KeywordsCard";
+import RecommendationCard from "./components/RecommendationCard";
 
 import api from "./services/api";
 
@@ -69,9 +73,26 @@ function App() {
             )}
 
             {result && (
-                <pre className="mt-8 overflow-auto rounded-lg bg-white p-6 shadow">
-                    {JSON.stringify(result, null, 2)}
-                </pre>
+                <>
+
+                    <SummaryCard
+                        summary={result.summary}
+                    />
+
+                    <ClassificationCard
+                        domain={result.domain}
+                        confidence={result.confidence}
+                    />
+
+                    <KeywordsCard
+                        keywords={result.keywords}
+                    />
+
+                    <RecommendationCard
+                        papers={result.recommended_papers}
+                    />
+
+                </>
             )}
 
         </div>
