@@ -1,0 +1,29 @@
+# Python envs & caches
+venv/
+.venv/
+**/__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Git & editor
+.git/
+.gitignore
+.vscode/
+
+# Frontends (deployed separately to Vercel)
+frontend/
+frontendv1/
+**/node_modules/
+.next/
+
+# The fine-tuned model is loaded from the HF Hub at runtime, not bundled
+pipeline/classification/supervised/trained_model/
+pipeline/classification/supervised/modernbert_finetuning.ipynb
+
+# Local artifacts & docs not needed in the image
+app/uploads/
+tests/
+sample_papers/
+*.md
+.env
+.env.*
