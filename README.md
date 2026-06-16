@@ -1,16 +1,49 @@
-# Research-Paper-Analysis-System
+# Papermind — Research Paper Analysis System
 
-An NLP-powered research paper analysis system that combines semantic similarity methods and transformer-based classification to automatically identify research domains, generate concise summaries, extract keywords, and recommend related papers.
+**Papermind** is an NLP-powered research paper analysis platform that combines semantic similarity methods and transformer-based classification to automatically identify research domains, generate concise summaries, extract keywords, and recommend related papers — think NotebookLM, focused on research papers.
+
+It's a full-stack product: a **Next.js** web app (Papermind) backed by a **FastAPI** machine-learning service, deployed live.
+
+## Live
+
+- **App (frontend):** https://papermind-io.vercel.app — hosted on Vercel
+- **API (backend):** https://shreshhhh123-papermind-api.hf.space — hosted on Hugging Face Spaces
+- **Model:** https://huggingface.co/shreshhhh123/papermind-modernbert
+
+## How it works
+
+```
+PDF upload (Papermind / Next.js)
+        │
+        ▼
+FastAPI  /analyze  (Hugging Face Spaces)
+        │
+        ▼
+PDF extraction → section extraction → summarization
+                 → domain classification → keyword extraction
+                 → related-paper recommendations (OpenAlex)
+        │
+        ▼
+{ summary, domain, confidence, keywords, recommended_papers }
+```
 
 ## Tech Stack
 
-- ModernBERT (Fine-Tuned)
-- KeyBERT
-- DistilBART
-- BAAI/bge-small-en-v1.5
-- FAISS
-- FastAPI
-- PyTorch
+**Machine learning / backend**
+- ModernBERT (fine-tuned) — supervised domain classification
+- BAAI/bge-small-en-v1.5 — semantic embeddings (classification + keywords)
+- DistilBART — abstractive summarization
+- spaCy — POS-based keyword validation
+- Custom KeyBERT-style keyword extraction (CountVectorizer + cosine similarity + MMR)
+- OpenAlex API — scholarly paper recommendations
+- PyMuPDF, PyTorch, FastAPI, Uvicorn
+
+**Frontend**
+- Next.js (App Router), React, TypeScript
+- Tailwind CSS, shadcn-style UI components
+
+**Infrastructure**
+- Vercel (frontend) · Hugging Face Spaces + Docker (backend) · Hugging Face Hub (model)
 
 
 ## Research Paper Domain Classification
@@ -56,8 +89,8 @@ Research Paper (PDF)
         ↓
  Abstract Extraction
         ↓
- ┌───────────────────┬───────────────────┐
- │                   │                   │
+ ┌───────────────────┬
+ │                   │                   
  ▼                   ▼
 Semantic       ModernBERT
 Classifier     Classifier
@@ -262,18 +295,37 @@ OpenAlex was selected because it:
 * OpenAlex REST API
 * Pydantic
 
-## Current Progress
+## Frontend (Papermind)
 
-✅ PDF Processing
+The web app lives in [`frontendv1/`](frontendv1/) — a Next.js (App Router) application that is the product face of the system.
 
-✅ Semantic Domain Classification
+- Branded landing page introducing Papermind
+- Analysis workspace: drag-and-drop PDF upload, live progress, and result cards for the summary, domain + confidence, keywords, and recommended papers
+- Light/dark theme, hand-built shadcn-style UI (no template)
+- Talks to the FastAPI backend with no mock data
 
-✅ Fine-Tuned ModernBERT Classifier
+In production the browser uploads **directly** to the backend (via `NEXT_PUBLIC_BACKEND_URL`) to avoid Vercel's 4.5 MB function-payload limit; in local development it uses a Next.js proxy route. See [`frontendv1/README.md`](frontendv1/README.md) for details.
 
-✅ TLDR Generation
+## Running locally
 
-✅ Keyword Extraction
+**Backend** (from the repo root):
 
-✅ Semantic Paper Recommendation
+```bash
+python -m venv venv
+venv\Scripts\activate          # Windows
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+uvicorn app.main:app --reload  # http://127.0.0.1:8000  (docs at /docs)
+```
 
-🚧 FastAPI Integration
+**Frontend** (in `frontendv1/`):
+
+```bash
+npm install
+npm run dev                     # http://localhost:3000
+```
+
+## Deployment
+
+The app is deployed with the frontend on **Vercel** and the ML backend on **Hugging Face Spaces** (Docker). Full step-by-step instructions are in [`DEPLOY.md`](DEPLOY.md).
+
