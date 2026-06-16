@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from pipeline.analysis_result import AnalysisResult
@@ -34,6 +35,9 @@ from pipeline.keyword_extraction.mmr import (
 from pipeline.recommendations.openalex import OpenAlexClient
 
 
+logger = logging.getLogger(__name__)
+
+
 class AnalysisPipeline:
 
     def __init__(self) -> None:
@@ -59,8 +63,6 @@ class AnalysisPipeline:
         )
 
         summary = generate_summary(summary_input)
-
-        classification = classify(abstract)
 
         domain, confidence = classify(abstract)
 
@@ -93,44 +95,51 @@ class AnalysisPipeline:
             for i in range(0, len(search_keywords), 2)
         ]
 
-        recommended_papers = {}
+        # Recommendations depend on a live external API. Never let a network
+        # failure there sink an otherwise successful analysis.
+        try:
+            recommended_papers = {}
 
-        for query in search_queries:
+            for query in search_queries:
 
-            papers = self.recommendation_client.search_papers(
-                query
+                papers = self.recommendation_client.search_papers(
+                    query
+                )
+
+                for paper in papers:
+
+                    if paper.paper_id not in recommended_papers:
+
+                        recommended_papers[paper.paper_id] = {
+                            "paper": paper,
+                            "matches": 1,
+                        }
+
+                    else:
+
+                        recommended_papers[paper.paper_id][
+                            "matches"
+                        ] += 1
+
+            ranked_papers = sorted(
+                recommended_papers.values(),
+                key=lambda item: (
+                    item["matches"],
+                    item["paper"].citation_count or 0,
+                ),
+                reverse=True,
             )
 
-            for paper in papers:
+            ranked_papers = ranked_papers[:10]
 
-                if paper.paper_id not in recommended_papers:
+            papers = [
+                item["paper"]
+                for item in ranked_papers
+            ]
 
-                    recommended_papers[paper.paper_id] = {
-                        "paper": paper,
-                        "matches": 1,
-                    }
-
-                else:
-
-                    recommended_papers[paper.paper_id][
-                        "matches"
-                    ] += 1
-
-        ranked_papers = sorted(
-            recommended_papers.values(),
-            key=lambda item: (
-                item["matches"],
-                item["paper"].citation_count,
-            ),
-            reverse=True,
-        )
-
-        ranked_papers = ranked_papers[:10]
-
-        papers = [
-            item["paper"]
-            for item in ranked_papers
-        ]
+        except Exception:
+            logger.exception("Recommendation step failed; returning no papers.")
+            papers = []
 
 
         return AnalysisResult(

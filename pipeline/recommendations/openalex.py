@@ -1,28 +1,69 @@
+import os
+import logging
 from typing import List
+
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
 from pipeline.recommendations.models import Paper
 
+logger = logging.getLogger(__name__)
+
+
 class OpenAlexClient:
-    def __init__(self):
-        self.base_url= "https://api.openalex.org"
-        self.timeout=10
+    def __init__(self, timeout: int = 20):
+        self.base_url = "https://api.openalex.org"
+        self.timeout = timeout
+
+        # OpenAlex serves a faster, more reliable "polite pool" to clients that
+        # identify themselves. Set OPENALEX_MAILTO to opt in.
+        self.mailto = os.getenv("OPENALEX_MAILTO")
+
+        self.session = requests.Session()
+        self.session.headers.update(
+            {
+                "User-Agent": "Papermind/1.0 (research-paper-analysis-system)"
+                + (f" mailto:{self.mailto}" if self.mailto else "")
+            }
+        )
+
+        # Retry transient failures (timeouts, rate limits, 5xx) with backoff.
+        retry = Retry(
+            total=2,
+            backoff_factor=0.6,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET"],
+        )
+        self.session.mount("https://", HTTPAdapter(max_retries=retry))
 
     def search_papers(self, query: str) -> List[Paper]:
         endpoint = f"{self.base_url}/works"
-        params = {"search": query, "per-page":5}
+        params = {"search": query, "per-page": 5}
+        if self.mailto:
+            params["mailto"] = self.mailto
 
-        response = requests.get(endpoint, params=params, timeout=self.timeout)
-        response.raise_for_status
-        data = response.json()
+        try:
+            response = self.session.get(
+                endpoint, params=params, timeout=self.timeout
+            )
+            response.raise_for_status()
+            data = response.json()
+        except requests.RequestException as exc:
+            # A single failed query should never crash the whole analysis;
+            # degrade gracefully to no recommendations for this query.
+            logger.warning("OpenAlex search failed for %r: %s", query, exc)
+            return []
+
         papers = []
-        
+
         for work in data.get("results", []):
             paper = self._parse_paper(work)
             papers.append(paper)
 
         return papers
 
-    def _parse_authors(self, authorships: list) ->  List[str]:
+    def _parse_authors(self, authorships: list) -> List[str]:
 
         authors = []
 
@@ -53,7 +94,7 @@ class OpenAlexClient:
                 words[position] = word
 
         return " ".join(words)
-    
+
     def _parse_paper(self, work: dict) -> Paper:
 
         open_access = work.get("open_access", {})
