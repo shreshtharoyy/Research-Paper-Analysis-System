@@ -14,7 +14,11 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "https://papermind-io.vercel.app",
     ],
+
+    # Also allow Vercel preview deployments (e.g. papermind-io-git-*.vercel.app).
+    allow_origin_regex=r"https://.*\.vercel\.app",
 
     allow_credentials=True,
 
@@ -22,5 +26,10 @@ app.add_middleware(
 
     allow_headers=["*"],
 )
+
+@app.get("/")
+def health():
+    return {"status": "ok", "service": "Papermind API"}
+
 
 app.include_router(analysis_router)
