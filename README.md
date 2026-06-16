@@ -81,23 +81,34 @@ The project compares a semantic embedding-based classifier against a fine-tuned 
 
 ### Architecture
 
-Research Paper (PDF)
-        ↓
- PDF Text Extraction
-        ↓
-   Text Cleaning
-        ↓
- Abstract Extraction
-        ↓
- ┌───────────────────┬
- │                   │                   
- ▼                   ▼
-Semantic       ModernBERT
-Classifier     Classifier
- │                   │
- ▼                   ▼
-Domain        Domain
-Prediction    Prediction
+```text
+                 Research Paper (PDF)
+                          │
+                          ▼
+                   PDF Text Extraction
+                          │
+                          ▼
+                      Text Cleaning
+                          │
+                          ▼
+                   Abstract Extraction
+                          │
+              ┌───────────┴───────────┐
+              ▼                       ▼
+         Semantic                ModernBERT
+         Classifier              Classifier
+      (bge embeddings)          (fine-tuned)
+              │                       │
+              ▼                       ▼
+       Domain + score          Domain + score
+              └───────────┬───────────┘
+                          ▼
+                Decision / Reconciliation
+                      (classify())
+                          │
+                          ▼
+              Final Domain + Confidence
+```
 
 
 ## Research Paper Summarization
