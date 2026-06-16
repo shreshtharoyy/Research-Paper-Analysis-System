@@ -16,3 +16,4 @@ app/uploads/
 frontend/node_modules/
 frontend/dist/
 .env.*
+frontend/
